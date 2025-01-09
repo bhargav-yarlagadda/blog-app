@@ -8,6 +8,6 @@ const Loading = () => {
             <div className='h-8 w-8 bg-white rounded-full animate-bounce'></div>
         </div>
     )
-}
+} 
 
 export default Loading
