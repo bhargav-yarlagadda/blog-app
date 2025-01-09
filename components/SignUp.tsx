@@ -1,8 +1,9 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { createUserAccount } from "@/appwrite/api";
 import { INewUser } from "@/types";
+import Loading from "./Loader";
 const SignUpPage = () => {
   const [formValues, setFormValues] = useState({
     name: "",
@@ -12,8 +13,8 @@ const SignUpPage = () => {
   });
 
   const [error, setError] = useState("");
-
-  const handleChange = (e:any) => {
+  const [loading, setLoading] = useState(false);
+  const handleChange = (e: any) => {
     const { id, value } = e.target;
     setFormValues({ ...formValues, [id]: value });
 
@@ -25,13 +26,17 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-  
+
     // Validate username
-    if (formValues.username.trim() === "" || formValues.username.includes(" ")) {
+    if (
+      formValues.username.trim() === "" ||
+      formValues.username.includes(" ")
+    ) {
       setError("Username cannot contain empty spaces.");
       return;
     }
-  
+
+    setLoading(true);
     // Perform further actions like submitting the form
     const user: INewUser = {
       name: formValues.name,
@@ -39,21 +44,29 @@ const SignUpPage = () => {
       username: formValues.username,
       password: formValues.password,
     };
-  
+
     const newUser = await createUserAccount({ user });
-  
+    setLoading(false);
     if (typeof newUser === "string") {
       // If the result is an error message (string), set the error state
-      setError("this combination of username and email already exists please choose different email or username");
+      setError(
+        "this combination of username and email already exists please choose different email or username"
+      );
     } else {
       console.log("New user:", newUser);
       // You can reset the error if needed
-      setError(''); 
+      setError("");
     }
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-65  z-50">
+          <Loading />
+        </div>
+      )}
+
       <div className="w-full max-w-md bg-gray-black shadow-lg rounded-lg p-8">
         <p className="text-4xl text-white w-full text-center font-bold">
           Blog<span className="text-blue-500">Verse</span>
@@ -63,9 +76,7 @@ const SignUpPage = () => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Input */}
-          {error && (
-              <p className="text-red-500 text-sm mt-1">{error}</p>
-            )}
+          {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           <div>
             <label
               htmlFor="name"
@@ -100,7 +111,6 @@ const SignUpPage = () => {
               placeholder="johndoe123"
               required
             />
-           
           </div>
           {/* Gmail Input */}
           <div>
