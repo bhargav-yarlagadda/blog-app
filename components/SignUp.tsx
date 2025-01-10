@@ -1,19 +1,22 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { createUserAccount } from "@/appwrite/api";
 import { INewUser } from "@/types";
 import Loading from "./Loader";
+import { useCreateUserAccountMutation, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 const SignUpPage = () => {
   const [formValues, setFormValues] = useState({
     name: "",
     username: "",
-    gmail: "",
+    email: "",
     password: "",
   });
 
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+
+
+  const {mutateAsync:createUserAccount,isPending:loading }=useCreateUserAccountMutation()
+  const {mutateAsync:signInAccount,isPending:isSigningIn} = useSignInAccount()
   const handleChange = (e: any) => {
     const { id, value } = e.target;
     setFormValues({ ...formValues, [id]: value });
@@ -36,17 +39,20 @@ const SignUpPage = () => {
       return;
     }
 
-    setLoading(true);
+   
     // Perform further actions like submitting the form
     const user: INewUser = {
       name: formValues.name,
-      email: formValues.gmail,
+      email: formValues.email,
       username: formValues.username,
       password: formValues.password,
     };
 
-    const newUser = await createUserAccount({ user });
-    setLoading(false);
+    const newUser = await createUserAccount( user );
+    if(!newUser){
+      setError("Sign Up failed,Please Try again...")
+      return;
+    }
     if (typeof newUser === "string") {
       // If the result is an error message (string), set the error state
       setError(
@@ -57,6 +63,15 @@ const SignUpPage = () => {
       // You can reset the error if needed
       setError("");
     }
+    const session = await signInAccount({
+      email:formValues.email,
+      password:formValues.password
+    })
+    if(!session){
+      setError("Cannot create session to login ,please try again after sometime")
+    }
+
+    
   };
 
   return (
@@ -123,7 +138,7 @@ const SignUpPage = () => {
             <input
               type="email"
               id="gmail"
-              value={formValues.gmail}
+              value={formValues.email}
               onChange={handleChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="example@gmail.com"
