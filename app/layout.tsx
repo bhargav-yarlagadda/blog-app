@@ -1,6 +1,10 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthProvider from "@/context/AuthContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,10 +16,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "BlogVerse",
-  description: "Share your Blogs Instantly",
-};
+// Create a QueryClient instance
+const queryClient = new QueryClient();
+
+// export const metadata: Metadata = {
+//   title: "BlogVerse",
+//   description: "Share your Blogs Instantly",
+// };
 
 export default function RootLayout({
   children,
@@ -27,7 +34,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            {children}
+            {/* Add React Query Devtools for debugging */}
+          </AuthProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

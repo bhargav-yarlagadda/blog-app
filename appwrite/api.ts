@@ -1,5 +1,6 @@
 import { account, appwriteConfig, avatars, databases } from "@/appwrite";
 import { INewUser } from "@/types";
+import { Query } from "appwrite";
 import {  ID } from "appwrite";
 import { Url } from "next/dist/shared/lib/router/router";
 
@@ -8,6 +9,7 @@ export async function createUserAccount({ user }: { user: INewUser }) {
     try {
 
         // user authientication
+        console.log(user)
         const newAccount = await account.create(
             ID.unique(),
             user.email,  // Now you can access `email`, `password`, etc.
@@ -21,10 +23,10 @@ export async function createUserAccount({ user }: { user: INewUser }) {
         // creating a new user to db,into users collections
         const newUser = await saveUserToDB({
             accountId:newAccount?.$id,
-            name:newAccount.name,
-            email:newAccount.email,
-            username:user.username,
-            imageUrl: new URL(avatarUrl),
+            name:newAccount?.name,
+            email:newAccount?.email,
+            username:user?.username,
+            imageUrl: new URL(avatarUrl) || "",
 })
 
         return newUser
@@ -59,5 +61,27 @@ export async function  signInAccount(user:{email:string,password:string}) {
         return session
     } catch (error) {
         console.log("unable to to create session")
+    }
+}
+
+export async function getCurrentUser(){
+    try {
+        const currentAccount = await account.get()
+        if(!currentAccount){
+            throw Error
+        }
+        const currentUser = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            [
+                Query.equal('accountId',currentAccount.$id)
+            ]
+        )    
+        if(!currentUser){
+            throw Error
+        }
+        return currentUser.documents[0]
+    } catch (error:any) {
+        console.log("unable to find the user",error.message)
     }
 }

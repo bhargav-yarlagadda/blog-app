@@ -1,10 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { INewUser } from "@/types";
 import Loading from "./Loader";
-import { useCreateUserAccountMutation, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
+import {
+  useCreateUserAccountMutation,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
+import { AuthContext } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 const SignUpPage = () => {
+  const router = useRouter()
+
   const [formValues, setFormValues] = useState({
     name: "",
     username: "",
@@ -13,10 +20,12 @@ const SignUpPage = () => {
   });
 
   const [error, setError] = useState("");
+  const { checkAuthUser,isLoading:isUserLoading, } = useContext(AuthContext);
 
-
-  const {mutateAsync:createUserAccount,isPending:loading }=useCreateUserAccountMutation()
-  const {mutateAsync:signInAccount,isPending:isSigningIn} = useSignInAccount()
+  const { mutateAsync: createUserAccount, isPending: loading } =
+    useCreateUserAccountMutation();
+  const { mutateAsync: signInAccount, isPending: isSigningIn } =
+    useSignInAccount();
   const handleChange = (e: any) => {
     const { id, value } = e.target;
     setFormValues({ ...formValues, [id]: value });
@@ -39,7 +48,6 @@ const SignUpPage = () => {
       return;
     }
 
-   
     // Perform further actions like submitting the form
     const user: INewUser = {
       name: formValues.name,
@@ -48,9 +56,9 @@ const SignUpPage = () => {
       password: formValues.password,
     };
 
-    const newUser = await createUserAccount( user );
-    if(!newUser){
-      setError("Sign Up failed,Please Try again...")
+    const newUser = await createUserAccount(user);
+    if (!newUser) {
+      setError("Sign Up failed,Please Try again...");
       return;
     }
     if (typeof newUser === "string") {
@@ -64,14 +72,26 @@ const SignUpPage = () => {
       setError("");
     }
     const session = await signInAccount({
-      email:formValues.email,
-      password:formValues.password
-    })
-    if(!session){
-      setError("Cannot create session to login ,please try again after sometime")
+      email: formValues.email,
+      password: formValues.password,
+    });
+    if (!session) {
+      setError(
+        "Cannot create session to login ,please try again after sometime"
+      );
     }
-
-    
+    const isLoggedIn = await checkAuthUser();
+    if(isLoggedIn){
+      setFormValues({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+      })
+      router.push('/')
+    }else{
+      setError('Sign Up failed plese try again')
+    }
   };
 
   return (
@@ -137,7 +157,7 @@ const SignUpPage = () => {
             </label>
             <input
               type="email"
-              id="gmail"
+              id="email"
               value={formValues.email}
               onChange={handleChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
