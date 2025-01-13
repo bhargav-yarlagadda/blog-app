@@ -1,6 +1,6 @@
-
-
 import type { Metadata } from "next";
+import Topbar from '@/components/Topbar'
+import LeftSideBar from '@/components/LeftSideBar'
 
 
 export const metadata: Metadata = {
@@ -14,6 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>{children}</div>
+    <div className="flex flex-colmd:flex-row">
+      <Topbar/>
+      <LeftSideBar/>
+      {children}
+    </div>
   );
 }

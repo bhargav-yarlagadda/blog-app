@@ -85,3 +85,11 @@ export async function getCurrentUser(){
         console.log("unable to find the user",error.message)
     }
 }
+export async function signOutAccount(){
+    try {
+            const session =  await account.deleteSession("current")
+
+    } catch (error:any) {
+        console.log("error in signing out ",error.message)
+    }
+}

@@ -1,4 +1,4 @@
-import { createUserAccount, signInAccount } from '@/appwrite/api'
+import { createUserAccount, signInAccount, signOutAccount } from '@/appwrite/api'
 import { INewUser } from '@/types'
 import {
     useQueries,
@@ -28,4 +28,11 @@ export const useSignInAccount = ()=>{
     )
 
 
+}
+export const useSignOutAccount = ()=>{
+    return useMutation(
+        {
+            mutationFn:signOutAccount
+        }
+    )   
 }
