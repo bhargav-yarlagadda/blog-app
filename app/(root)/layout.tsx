@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-colmd:flex-row">
+    <div className="flex flex-col md:flex-row">
       <Topbar/>
       <LeftSideBar/>
       {children}
