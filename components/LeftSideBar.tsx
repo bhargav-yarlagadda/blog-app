@@ -40,9 +40,14 @@ const LeftSideBar = () => {
             height={40}
             width={40}
           />
+          <div className="flex flex-col justify-center items-start">
           <span className="text-white text-lg font-semibold">
-            {user?.username}
+            {user?.name}
           </span>
+          <span className="text-gray-300 text-sm">
+            @{user?.username || "anonymous user" } 
+          </span>
+          </div>
         </div>
 
         <p className="text-white text-center text-sm font-medium max-w-xs opacity-80">
