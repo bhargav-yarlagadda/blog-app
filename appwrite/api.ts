@@ -2,7 +2,6 @@ import { account, appwriteConfig, avatars, databases } from "@/appwrite";
 import { INewUser } from "@/types";
 import { Query } from "appwrite";
 import {  ID } from "appwrite";
-import { Url } from "next/dist/shared/lib/router/router";
 
 
 export async function createUserAccount({ user }: { user: INewUser }) {

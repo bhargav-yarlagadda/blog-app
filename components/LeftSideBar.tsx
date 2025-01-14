@@ -1,11 +1,24 @@
-import React from "react";
+'use client'
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { sidebarLinks } from "@/constants";
+import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
+import { useRouter } from "next/navigation";
 
 const LeftSideBar = () => {
-  return (
-    <div className="h-screen max-w-[290px] w-full px-4 py-6 bg-gray-950 text-gray-200">
+  const router = useRouter()
+    const {mutateAsync:signOut,isSuccess} = useSignOutAccount()
+    const handleSignOut = ()=>{
+      signOut()
+    }
+    useEffect(()=>{
+      if(isSuccess){
+        router.push('/auth/sign-in')
+      }
+    },[isSuccess])
+    return (
+    <div className="h-screen max-w-[290px] flex flex-col justify-between w-full px-4 py-6 bg-gray-950 text-gray-200">
       {/* Logo Section */}
       <div className="flex justify-center bg-gray-950 items-center mb-8">
         <Image
@@ -57,6 +70,12 @@ const LeftSideBar = () => {
           );
         })}
       </ul>
+      <button 
+      onClick={handleSignOut}
+      className="bg-gray-950 flex px-3 items-center gap-3 ">
+          <Image src={'/icons/logout.svg'} className="bg-gray-950" alt="" height={35} width={35} />
+          <span className="bg-gray-950">Logout</span>
+      </button>
     </div>
   );
 };
