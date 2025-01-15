@@ -7,6 +7,7 @@ import AuthProvider from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LeftSideBar from "@/components/LeftSideBar";
 import Topbar from "@/components/Topbar";
+import BottomBar from "@/components/BottomBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
             <Topbar/>
             <LeftSideBar/>
             {children}
+            <BottomBar/>
         </div>
           </AuthProvider>
         </QueryClientProvider>
