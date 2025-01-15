@@ -5,6 +5,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import LeftSideBar from "@/components/LeftSideBar";
+import Topbar from "@/components/Topbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +38,11 @@ export default function RootLayout({
       >
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
+            <div className="flex flex-col md:flex-row">
+            <Topbar/>
+            <LeftSideBar/>
             {children}
-            {/* Add React Query Devtools for debugging */}
+        </div>
           </AuthProvider>
         </QueryClientProvider>
       </body>

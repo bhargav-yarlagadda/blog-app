@@ -27,10 +27,11 @@ const Topbar = () => {
       </div>
       <div className="flex bg-gray-900 gap-4">
         <button >
-          <Link href={`/profile/${user.id}`} className="flex items-center  bg-gray-900 justify-center">
+          <Link href={`/update-profile/${user.id}`} className="flex items-center  bg-gray-900 justify-center">
+          
                 <Image src={user.imageUrl || '/icons/profile-placeholder.svg'} alt="" width={25} height={25} className="rounded-full bg-gray-900">
-
-                </Image>
+          </Image>
+                
           </Link>
         </button>
         <button onClick={handleSignOut}>
