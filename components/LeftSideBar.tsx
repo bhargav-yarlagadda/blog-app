@@ -20,7 +20,7 @@ const LeftSideBar = () => {
     }
   }, [isSuccess]);
   return (
-    <div className="hidden md:flex h-screen max-w-[290px]  flex-col justify-between w-full px-4 py-6 bg-gray-950 text-gray-200">
+    <div className="hidden md:flex min-h-screen max-w-[290px]  flex-col justify-between w-full px-4 py-6 bg-gray-950 text-gray-200">
       {/* Logo Section */}
       <div className="flex justify-center bg-gray-950 items-center mb-8">
         <Image

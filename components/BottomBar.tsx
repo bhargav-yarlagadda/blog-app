@@ -24,7 +24,7 @@ const BottomBar = () => {
   }, [isSuccess]);
 
   return (
-    <div className="fixed bottom-0 w-full max-h-[100px] bg-gray-950 text-gray-200 flex md:hidden justify-around items-center px-4 py-2">
+    <div className="fixed rounded-t-xl -bottom-1 w-full max-h-[100px] bg-gray-950 text-gray-200 flex md:hidden justify-around items-center px-4 py-2">
 
       {/* Navigation Links */}
       {sidebarLinks.map((link: any) => {
