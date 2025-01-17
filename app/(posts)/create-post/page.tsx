@@ -4,9 +4,12 @@ import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
 import Loader from '@/components/Loader'
 import Image from "next/image";
 import React, { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter()
   const {user} = useContext(AuthContext)
+
   const {mutateAsync:createPost,isPending:isCreatingPost}=useCreatePost()
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
@@ -52,6 +55,7 @@ const Page = () => {
         setImage(null);
         setTags("");
         setLocation("");
+        router.push('/')
       } else {
         console.error("Failed to create post");
       }
