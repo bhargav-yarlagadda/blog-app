@@ -128,7 +128,7 @@ const Page = () => {
                   width={300}
                   className="rounded-lg w-[90%] cursor-pointer max-h-[190px]"
                 />
-                <span>click on image to replace the file</span>
+                <span className="text-sm font-normal mt-3 text-gray-300">click on image to replace the file</span>
               </div>
             )}
           </label>
