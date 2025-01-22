@@ -8,6 +8,7 @@ import {
 import { INewPost, INewUser } from "@/types";
 import { Query } from "appwrite";
 import { ID } from "appwrite";
+import { use } from "react";
 
 export async function createUserAccount({ user }: { user: INewUser }) {
   try {
@@ -215,7 +216,8 @@ export async function likePost(postId:string,likesArray:string[]){
     console.log("could not like post ",error.message)
   }
 }
-export async function savePost(postId:string,userId:string){
+export async function savePost(userId:string,postId:string){
+  console.log(postId,userId)
   try {
     const updatedPost = await databases.createDocument (appwriteConfig.databaseId,appwriteConfig.savesCollectionId,ID.unique(),
     {

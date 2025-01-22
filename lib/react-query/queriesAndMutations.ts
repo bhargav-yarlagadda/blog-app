@@ -90,6 +90,7 @@ export const useLikePost = () => {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ userId, postId }: { userId: string; postId: string }) =>
+        
         savePost(userId, postId),
       onSuccess: () => {
         queryClient.invalidateQueries({
