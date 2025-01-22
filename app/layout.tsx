@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LeftSideBar from "@/components/LeftSideBar";
 import Topbar from "@/components/Topbar";
 import BottomBar from "@/components/BottomBar";
+import ConnectToUsers from "@/components/ConnectToUser";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,11 +41,22 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <div className="flex flex-col md:flex-row">
-            <Topbar/>
-            <LeftSideBar/>
-            {children}
-            <BottomBar/>
-        </div>
+              <Topbar />
+              <LeftSideBar />
+              <div className="grid w-full grid-cols-1 md:grid-cols-4 overflow-y-scroll" style={{scrollbarWidth:'none'}}>
+                {/* Left section */}
+                <div className="md:col-span-3 overflow-y-scroll" style={{scrollbarWidth:'none'}}>
+                  {children}
+                  </div>
+
+                {/* Right section */}
+                <div className="md:col-span-1">
+                  <ConnectToUsers />
+                </div>
+              </div>
+
+              <BottomBar />
+            </div>
           </AuthProvider>
         </QueryClientProvider>
       </body>

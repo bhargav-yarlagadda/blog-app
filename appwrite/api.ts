@@ -200,3 +200,45 @@ export async function getRecentPosts() {
     console.log("Cannot Retrive posts in getRecentPosts");
   }
 }
+
+
+export async function likePost(postId:string,likesArray:string[]){
+  try {
+    const updatedPost = await databases.updateDocument(appwriteConfig.databaseId,appwriteConfig.postCollectionId,postId,{
+      likes:likesArray
+    })
+    if(!updatedPost){
+      throw Error
+    }
+    return updatedPost
+  } catch (error:any) {
+    console.log("could not like post ",error.message)
+  }
+}
+export async function savePost(postId:string,userId:string){
+  try {
+    const updatedPost = await databases.createDocument (appwriteConfig.databaseId,appwriteConfig.savesCollectionId,ID.unique(),
+    {
+      user:userId,
+      post:postId
+    })
+    if(!updatedPost){
+      throw Error
+    }
+    return updatedPost
+  } catch (error:any) {
+    console.log("could not like post ",error.message)
+  }
+}
+
+export async function deleteSavePost(savedRecordId:string ){
+  try {
+    const statusCode = await databases.deleteDocument (appwriteConfig.databaseId,appwriteConfig.savesCollectionId,savedRecordId)
+    if(!statusCode){
+      throw Error
+    }
+    return {status:"ok"}
+    } catch (error:any) {
+    console.log("could not like post ",error.message)
+  }
+}

@@ -12,6 +12,7 @@ const Page = () => {
 
   return (
     <div
+    style={{scrollbarWidth:"none"}}
       className="h-screen bg-gradient-to-b from-gray-900 to-black text-white items-center py-10 flex w-full flex-col overflow-y-scroll no-scrollbar"
     >
       {/* Show loading animation */}

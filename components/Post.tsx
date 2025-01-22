@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Models } from "appwrite";
+import { AuthContext } from "@/context/AuthContext";
+
+import { FiEdit } from "react-icons/fi";
+import { FaEdit } from "react-icons/fa";
+import PostStats from "./PostStats";
 
 type PostCardProps = {
   post: Models.Document;
 };
 
 const PostCard = ({ post }: PostCardProps) => {
+  const {user} = useContext(AuthContext)
   return (
-    <div className="p-6 border border-gray-700 rounded-lg max-w-md mb-10 sm:max-w-lg md:max-w-3xl w-full shadow-lg bg-gray-900">
+    <div className="p-6 border border-gray-700 rounded-lg max-w-md mb-10 sm:max-w-lg md:max-w-3xl w-full shadow-lg bg-gray-950">
       {/* Creator Info */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
@@ -45,23 +51,13 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
         </div>
+        {post.creator.$id === user.id && (
+  <Link href={`/update-post/${post.$id}`} className="flex items-center space-x-1 text-blue-500 hover:text-blue-700">
+    <Image src={'/icons/edit.svg' } alt="" height={20} width={20}/>
+    
+  </Link>
+)}
       </div>
-
-      {post.imageUrl && (
-          <div className="relative my-4 w-full h-64 rounded-lg overflow-hidden shadow-md">
-            <Image
-              src={post.imageUrl}
-              alt="post"
-              className="rounded-lg hover:scale-105 transition-transform duration-500"
-              fill
-              objectFit="cover"
-            />
-          </div>
-        )}
-      {/* Post Content */}
-          <p className="text-gray-300 text-sm hover:text-gray-100 transition duration-300">
-            {post.caption || "Exploring the beauty of nature!"}
-          </p>
       <Link href={`/posts/${post.caption}`}>
         <div className="mb-6">
           <ul className="flex flex-wrap gap-2 mt-3">
@@ -79,6 +75,24 @@ const PostCard = ({ post }: PostCardProps) => {
         {/* Post Image */}
         
       </Link>
+      {post.imageUrl && (
+          <div className="relative my-4 w-full h-64 rounded-lg overflow-hidden shadow-md">
+            <Image
+              src={post.imageUrl}
+              alt="post"
+              className="rounded-lg hover:scale-105 transition-transform duration-500"
+              fill
+              objectFit="cover"
+            />
+          </div>
+        )}
+      {/* Post Content */}
+          <p className="text-gray-300 text-sm hover:text-gray-100 transition duration-300">
+            {post.caption || "Exploring the beauty of nature!"}
+          </p>
+        <div>
+          <PostStats post={post} userId = {user.id}/>
+        </div>
     </div>
   );
 };
