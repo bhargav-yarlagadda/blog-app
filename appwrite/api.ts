@@ -5,7 +5,7 @@ import {
   storage,
   databases,
 } from "@/appwrite";
-import { INewPost, INewUser } from "@/types";
+import { INewPost,IUpdatePost, INewUser } from "@/types";
 import { Query } from "appwrite";
 import { ID } from "appwrite";
 import { use } from "react";
@@ -242,5 +242,87 @@ export async function deleteSavePost(savedRecordId:string ){
     return {status:"ok"}
     } catch (error:any) {
     console.log("could not like post ",error.message)
+  }
+}
+
+
+export async function getPostById(postId:string){
+  try {
+    const post = databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId 
+    )
+    return post
+  } catch (error) {
+      console.log(error)
+  }
+}
+
+// ============================== UPDATE POST
+
+export async function updatePost(post: IUpdatePost) {
+  const hasFileToUpdate = post.file.length > 0;
+
+  try {
+    let image = {
+      imageUrl: new URL(post.imageUrl), // Convert string to URL
+      imageId: post.imageId,
+    };
+
+    if (hasFileToUpdate) {
+      // Upload new file to appwrite storage
+      const uploadedFile = await uploadFile(post.file[0]);
+      if (!uploadedFile) throw new Error("File upload failed");
+
+      // Get new file URL
+      const fileUrl = getFilePreview(uploadedFile.$id);
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id);
+        throw new Error("Failed to get file preview");
+      }
+
+      image = { 
+        ...image, 
+        imageUrl: new URL(fileUrl), // Convert string to URL
+        imageId: uploadedFile.$id 
+      };
+    }
+
+    // Convert tags into array
+    const tags = post.tags?.replace(/ /g, "").split(",") || [];
+
+    // Update post
+    const updatedPost = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      post.postId,
+      {
+        caption: post.caption,
+        imageUrl: image.imageUrl.toString(), // Save as string in database
+        imageId: image.imageId,
+        location: post.location,
+        tags: tags,
+      }
+    );
+
+    // Failed to update
+    if (!updatedPost) {
+      // Delete new file that has been recently uploaded
+      if (hasFileToUpdate) {
+        await deleteFile(image.imageId);
+      }
+
+      throw new Error("Failed to update post");
+    }
+
+    // Safely delete old file after successful update
+    if (hasFileToUpdate) {
+      await deleteFile(post.imageId);
+    }
+
+    return updatedPost;
+  } catch (error) {
+    console.log(error);
   }
 }
